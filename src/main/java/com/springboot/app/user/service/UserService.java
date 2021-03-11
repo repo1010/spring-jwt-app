@@ -46,4 +46,10 @@ public interface UserService {
 	 * @return void
 	 */
 	void delete(long id);
+
+	/**
+	 * Login validation
+	 * @param user
+	 */
+	void loginValidation(UserEntity user);
 }

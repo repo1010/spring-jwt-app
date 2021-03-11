@@ -61,6 +61,8 @@ public class UserController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ResponseEntity<?> login(@RequestBody UserEntity user) throws Exception {
 
+		userService.loginValidation(user);
+		
 		try {
 			authenticationManager
 					.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
@@ -72,7 +74,7 @@ public class UserController {
 
 		UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
 		if (user.getRole() != null && !userDetails.getAuthorities().stream()
-				.filter(auth -> auth.getAuthority().substring(5).equals(user.getRole())).findFirst().isPresent())
+				.filter(auth -> auth.getAuthority().substring(5).equalsIgnoreCase(user.getRole())).findFirst().isPresent())
 			throw new AuthenticationException("Input role do not match with given credential.");
 
 		String jwt = jwtUtilToken.generateToken(userDetails);

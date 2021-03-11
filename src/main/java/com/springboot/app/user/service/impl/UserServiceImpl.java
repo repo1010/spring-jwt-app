@@ -1,10 +1,19 @@
 package com.springboot.app.user.service.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 
 import com.springboot.app.user.model.UserEntity;
 import com.springboot.app.user.repository.UserRepository;
@@ -20,8 +29,13 @@ import com.springboot.app.user.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
 
+	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	Validator customValidator;
 
 	/**
 	 * Find all entities of type UserEntity
@@ -41,7 +55,6 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public Optional<UserEntity> find(long id) {
-
 		return userRepository.findById(id);
 	}
 
@@ -53,6 +66,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public List<UserEntity> save(List<UserEntity> users) {
+		validate(users);
 		return userRepository.saveAll(users);
 	}
 
@@ -65,6 +79,8 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public UserEntity update(UserEntity user, long id) {
+		validate(Arrays.asList(user));
+
 		Optional<UserEntity> retUser = find(id);
 		if (retUser.isPresent()) {
 			user.setId(id);
@@ -83,5 +99,40 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void delete(long id) {
 		userRepository.deleteById(id);
+	}
+
+	/**
+	 * Perform validation
+	 * 
+	 * @param tyres
+	 */
+	private void validate(List<UserEntity> users) {
+		List<String> constraintValdnList = new ArrayList<>();
+
+		users.stream().forEach(user -> {
+			Set<ConstraintViolation<UserEntity>> violations = customValidator.validate(user);
+
+			if (violations.size() > 0)
+				violations.stream().forEach(violation -> {
+					String joinedMsg = StringUtils.concat(violation.getMessageTemplate(), " for property: ",
+							violation.getPropertyPath(), " having invalid value: ",
+							violation.getInvalidValue() != null ? violation.getInvalidValue().toString() : "null");
+					logger.error(joinedMsg);
+					constraintValdnList.add(joinedMsg);
+				});
+		});
+		if (!constraintValdnList.isEmpty())
+			throw new javax.validation.ConstraintViolationException(constraintValdnList.toString(), null);
+	}
+
+	/**
+	 * Perform login Validation
+	 * 
+	 * @param user
+	 */
+	@Override
+	public void loginValidation(UserEntity user) {
+		this.validate(Arrays.asList(user));
+
 	}
 }

@@ -46,7 +46,7 @@ public class Tyre implements Serializable {
 	@ApiModelProperty(notes = "month detail", example = "JAN", required = true, position = 2)
 	@NotNull(message = "MonthDetail can not be null.")
 	@NotBlank(message = "MonthDetail can not be Blank.")
-	@Pattern(regexp = "JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC", flags = Pattern.Flag.CASE_INSENSITIVE)
+	@Pattern(regexp = "JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Month detail is not valid")
 	private String monthDtl;
 
 	@ApiModelProperty(notes = "year detail", example = "2021", required = true, position = 3)

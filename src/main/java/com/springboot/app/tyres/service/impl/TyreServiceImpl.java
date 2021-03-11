@@ -1,11 +1,20 @@
 package com.springboot.app.tyres.service.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 
 import com.springboot.app.tyre.model.Tyre;
 import com.springboot.app.tyre.repository.TyreRepository;
@@ -23,7 +32,12 @@ import com.springboot.app.util.JwtRequestFilter;
 @Service
 public class TyreServiceImpl implements TyreService {
 
+	private static final Logger logger = LoggerFactory.getLogger(TyreServiceImpl.class);
+
 	private TyreRepository tyresRepository;
+
+	@Autowired
+	Validator customValidator;
 
 	private boolean isUser = false;
 	private String username;
@@ -59,6 +73,9 @@ public class TyreServiceImpl implements TyreService {
 	public List<Tyre> save(List<Tyre> tyres) {
 		this.isUser = this.jwtRequestFilter.isUser().isPresent();
 		this.username = this.jwtRequestFilter.username();
+
+		validate(tyres);
+
 		if (isUser)
 			tyres.forEach(tyre -> tyre.setUsername(this.username));
 
@@ -102,6 +119,8 @@ public class TyreServiceImpl implements TyreService {
 		this.isUser = this.jwtRequestFilter.isUser().isPresent();
 		this.username = this.jwtRequestFilter.username();
 
+		validate(Arrays.asList(tyre));
+
 		Tyre retTyre = find(id);
 		if (retTyre != null && retTyre.getId() != null) {
 
@@ -115,6 +134,7 @@ public class TyreServiceImpl implements TyreService {
 			// set user
 			Optional<UserEntity> userEntity = Optional
 					.ofNullable((UserEntity) tyresRepository.loadUser(tyre.getUsername()));
+
 			if (userEntity.isPresent())
 				tyre.setUser(userEntity.get());
 			else
@@ -150,6 +170,30 @@ public class TyreServiceImpl implements TyreService {
 
 		}
 
+	}
+
+	/**
+	 * Perform validation
+	 * 
+	 * @param tyres
+	 */
+	private void validate(List<Tyre> tyres) {
+		List<String> constraintValdnList = new ArrayList<>();
+		tyres.stream().forEach(tyre -> {
+			Set<ConstraintViolation<Tyre>> violations = customValidator.validate(tyre);
+
+			if (violations.size() > 0)
+				violations.stream().forEach(violation -> {
+					String joinedMsg = StringUtils.concat(violation.getMessage(), " for property: ",
+							violation.getPropertyPath(), " having invalid value: ",
+							violation.getInvalidValue() != null ? violation.getInvalidValue().toString() : "null");
+					logger.error(joinedMsg);
+					constraintValdnList.add(joinedMsg);
+				});
+
+		});
+		if (!constraintValdnList.isEmpty())
+			throw new javax.validation.ConstraintViolationException(constraintValdnList.toString(), null);
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.springboot.app.user.service;
+package com.springboot.app.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.User;

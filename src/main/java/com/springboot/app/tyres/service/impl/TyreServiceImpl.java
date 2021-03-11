@@ -3,7 +3,6 @@ package com.springboot.app.tyres.service.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -81,10 +80,9 @@ public class TyreServiceImpl implements TyreService {
 
 		// Load user for storing into Tyre type input object
 		tyres.forEach(tyre -> {
-			Optional<UserEntity> userEntity = Optional
-					.ofNullable((UserEntity) tyresRepository.loadUser(tyre.getUsername()));
-			if (userEntity.isPresent())
-				tyre.setUser(userEntity.get());
+			UserEntity user = (UserEntity) tyresRepository.loadUser(tyre.getUsername());
+			if (user != null)
+				tyre.setUser(user);
 			else
 				throw new ConstraintViolationException("UserEntity is not persisted", null,
 						"foreign key constraint violation");
@@ -132,11 +130,9 @@ public class TyreServiceImpl implements TyreService {
 				tyre.setUsername(this.username);
 
 			// set user
-			Optional<UserEntity> userEntity = Optional
-					.ofNullable((UserEntity) tyresRepository.loadUser(tyre.getUsername()));
-
-			if (userEntity.isPresent())
-				tyre.setUser(userEntity.get());
+			UserEntity user = (UserEntity) tyresRepository.loadUser(tyre.getUsername());
+			if (user != null)
+				tyre.setUser(user);
 			else
 				throw new ConstraintViolationException("UserEntity is not persisted", null,
 						"foreign key constraint violation");

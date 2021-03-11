@@ -3,7 +3,6 @@ package com.springboot.app.user.service.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -54,8 +53,8 @@ public class UserServiceImpl implements UserService {
 	 * @return Optional<UserEntity>
 	 */
 	@Override
-	public Optional<UserEntity> find(long id) {
-		return userRepository.findById(id);
+	public UserEntity find(long id) {
+		return userRepository.findById(id).get();
 	}
 
 	/**
@@ -81,8 +80,8 @@ public class UserServiceImpl implements UserService {
 	public UserEntity update(UserEntity user, long id) {
 		validate(Arrays.asList(user));
 
-		Optional<UserEntity> retUser = find(id);
-		if (retUser.isPresent()) {
+		UserEntity retUser = find(id);
+		if (retUser != null) {
 			user.setId(id);
 			return userRepository.save(user);
 		}

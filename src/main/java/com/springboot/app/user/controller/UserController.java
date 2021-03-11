@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.springboot.app.security.config.CustomeUserDetailsService;
 import com.springboot.app.user.model.AuthResponse;
 import com.springboot.app.user.model.UserEntity;
-import com.springboot.app.user.service.CustomeUserDetailsService;
 import com.springboot.app.user.service.UserService;
 import com.springboot.app.util.JwtUtil;
 
@@ -62,7 +62,7 @@ public class UserController {
 	public ResponseEntity<?> login(@RequestBody UserEntity user) throws Exception {
 
 		userService.loginValidation(user);
-		
+
 		try {
 			authenticationManager
 					.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
@@ -74,7 +74,8 @@ public class UserController {
 
 		UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
 		if (user.getRole() != null && !userDetails.getAuthorities().stream()
-				.filter(auth -> auth.getAuthority().substring(5).equalsIgnoreCase(user.getRole())).findFirst().isPresent())
+				.filter(auth -> auth.getAuthority().substring(5).equalsIgnoreCase(user.getRole())).findFirst()
+				.isPresent())
 			throw new AuthenticationException("Input role do not match with given credential.");
 
 		String jwt = jwtUtilToken.generateToken(userDetails);
@@ -104,7 +105,7 @@ public class UserController {
 	@ApiOperation(value = "Find user for a given Id")
 	@RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
 	public ResponseEntity<UserEntity> findUser(@PathVariable long id) {
-		UserEntity user = userService.find(id).get();
+		UserEntity user = userService.find(id);
 		return ResponseEntity.ok().body(user);
 	}
 
@@ -131,7 +132,6 @@ public class UserController {
 	@ApiOperation(value = "Update user for a given Id")
 	@RequestMapping(value = "/users/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<UserEntity> updateUser(@Valid @RequestBody UserEntity user, @PathVariable long id) {
-
 		UserEntity retndUser = userService.update(user, id);
 		return ResponseEntity.ok().body(retndUser);
 	}
@@ -146,7 +146,6 @@ public class UserController {
 	@RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public void delete(@PathVariable long id) {
-
 		userService.delete(id);
 		ResponseEntity.noContent().build();
 	}

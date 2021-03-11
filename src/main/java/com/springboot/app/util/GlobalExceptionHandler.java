@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
 		// e.printStackTrace();
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Input data violated constarint check",
 				e.getMessage());
-		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(apiError);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
 	}
 
 	@ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
@@ -58,13 +58,24 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
 	}
 
+	@ExceptionHandler(javax.validation.ConstraintViolationException.class)
+	public ResponseEntity<?> handleException(javax.validation.ConstraintViolationException e) {
+		logger.error(e.getMessage());
+		System.out.println("In javax.validation.ConstraintViolationException Exception");
+		// e.printStackTrace();
+		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Input data violated validation checks",
+				e.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+	}
+
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<?> handleException(Exception e) {
 		logger.error(e.getMessage());
 		System.out.println("In Generic Exception");
 		// e.printStackTrace();
-		ApiError apiError = new ApiError(HttpStatus.EXPECTATION_FAILED, "Input Resuest Entity is invalid.", e.getMessage());
-		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(apiError);
+		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Input Resuest Entity is invalid.",
+				e.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
 	}
 
 }

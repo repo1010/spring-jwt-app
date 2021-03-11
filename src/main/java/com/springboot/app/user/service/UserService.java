@@ -1,7 +1,6 @@
 package com.springboot.app.user.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.springboot.app.user.model.UserEntity;
 
@@ -23,7 +22,7 @@ public interface UserService {
 	 * @param id
 	 * @return Optional<UserEntity>
 	 */
-	Optional<UserEntity> find(long id);
+	UserEntity find(long id);
 
 	/**
 	 * Save an entity of type UserEntity

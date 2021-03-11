@@ -1,4 +1,4 @@
-package com.springboot.app.user.service;
+package com.springboot.app.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -32,20 +32,17 @@ public class CustomeWebSecurity extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests()				
-				.antMatchers("/api/v1/tyres","/api/v1/tryes/**").hasAnyRole("ADMIN", "EDITOR", "USER")
-				.antMatchers("/api/v1/users","/api/v1/users/**").hasRole("ADMIN")
-				.antMatchers("/h2-console/**", "/api/v1/login", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
-						"/configuration/**", "/swagger-ui.html", "/webjars/**").permitAll()
-				.anyRequest().authenticated()
-				.and()
-				.sessionManagement()
+		http.csrf().disable().authorizeRequests().antMatchers("/api/v1/tyres", "/api/v1/tryes/**")
+				.hasAnyRole("ADMIN", "EDITOR", "USER").antMatchers("/api/v1/users", "/api/v1/users/**").hasRole("ADMIN")
+				.antMatchers("/h2-console/**", "/api/v1/login", "/v2/api-docs", "/configuration/ui",
+						"/swagger-resources/**", "/configuration/**", "/swagger-ui.html", "/webjars/**")
+				.permitAll().anyRequest().authenticated().and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
 		http.headers().frameOptions().disable();
-
+		System.out.println("In http");
 	}
 
 	@Override

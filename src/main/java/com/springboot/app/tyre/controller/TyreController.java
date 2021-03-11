@@ -25,58 +25,56 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/api/v1/tyres")
 public class TyreController {
 
+	private TyreService tyreService;
 
-	private TyreService tyresService;
-
-	private TyreController(TyreService tyresService) {
-		this.tyresService = tyresService;
+	private TyreController(TyreService tyreService) {
+		this.tyreService = tyreService;
 	}
 
 	/**
 	 * Get All Tyre entities.
+	 * 
 	 * @return ResponseEntity<List<Tyre>>
 	 */
 	@ApiOperation(value = "Get all tyres")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<Tyre>> getAllTyres() {
-		List<Tyre> tyres = this.tyresService.getAllTyres();
+		List<Tyre> tyres = this.tyreService.getAllTyres();
 
 		return ResponseEntity.ok().body(tyres);
-
 	}
 
 	/**
 	 * Get Tyre entity by Id
+	 * 
 	 * @param Long id
 	 * @return ResponseEntity<Tyre>
 	 */
 	@ApiOperation(value = "Get tyre using id")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Tyre> getTyre(@PathVariable Long id) {
-
-		Tyre addedTyre = this.tyresService.find(id);
+		Tyre addedTyre = this.tyreService.find(id);
 
 		return ResponseEntity.ok().body(addedTyre);
-
 	}
 
 	/**
 	 * Save Tyre entities
+	 * 
 	 * @param List<Tyre> tyres
 	 * @return ResponseEntity<List<Tyre>>
 	 */
 	@ApiOperation(value = "Save tyre")
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<List<Tyre>> saveTyre(@RequestBody List<Tyre> tyres) {
-
-		List<Tyre> addedTyres = this.tyresService.save(tyres);
+		List<Tyre> addedTyres = this.tyreService.save(tyres);
 
 		return ResponseEntity.ok().body(addedTyres);
-
 	}
 
 	/**
 	 * Update a Tyre entity
+	 * 
 	 * @param tyre
 	 * @param id
 	 * @return ResponseEntity<Tyre>
@@ -84,14 +82,14 @@ public class TyreController {
 	@ApiOperation(value = "Update tyre for a given Id")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Tyre> updateTyre(@RequestBody Tyre tyre, @PathVariable Long id) {
-		Tyre addedTyre = this.tyresService.update(tyre, id);
+		Tyre addedTyre = this.tyreService.update(tyre, id);
 
 		return ResponseEntity.ok().body(addedTyre);
-
 	}
 
 	/**
 	 * Delete a Tyre entity
+	 * 
 	 * @param id
 	 * @return void
 	 */
@@ -99,9 +97,8 @@ public class TyreController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void deleteTyre(@PathVariable Long id) {
 
-		if (this.tyresService.delete(id))
+		if (this.tyreService.delete(id))
 			ResponseEntity.noContent().build();
-
 	}
 
 }

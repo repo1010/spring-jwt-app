@@ -16,7 +16,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.springboot.app.tyre.model.Tyre;
 
@@ -75,7 +74,6 @@ public class UserEntity implements Serializable {
 		this.id = id;
 	}
 
-	
 	@Column(unique = true, nullable = false)
 	public String getUsername() {
 		return username;
@@ -85,7 +83,6 @@ public class UserEntity implements Serializable {
 		this.username = username;
 	}
 
-	
 	@Column(nullable = false)
 	public String getPassword() {
 		return password;

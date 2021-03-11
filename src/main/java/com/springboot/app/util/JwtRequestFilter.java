@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.springboot.app.user.service.CustomeUserDetailsService;
+import com.springboot.app.security.config.CustomeUserDetailsService;
 
 /**
  * JwtRequestFilter extracts JWT from Authorization header value. It further

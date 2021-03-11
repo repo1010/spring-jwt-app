@@ -72,7 +72,7 @@ public class UserController {
 
 		UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
 		if (user.getRole() != null && !userDetails.getAuthorities().stream()
-				.filter(auth -> auth.getAuthority().equals(user.getRole())).findFirst().isPresent())
+				.filter(auth -> auth.getAuthority().substring(5).equals(user.getRole())).findFirst().isPresent())
 			throw new AuthenticationException("Input role do not match with given credential.");
 
 		String jwt = jwtUtilToken.generateToken(userDetails);

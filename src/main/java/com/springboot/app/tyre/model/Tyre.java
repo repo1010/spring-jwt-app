@@ -15,6 +15,9 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.Range;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.springboot.app.user.model.UserEntity;
@@ -30,17 +33,17 @@ public class Tyre implements Serializable {
 
 	private Long id;
 
-	@NotNull(message = "Username can not be null.")
-	@NotBlank(message = "Username can not be blank.")
 	private String username;
 
 	private UserEntity user;
 
 	@NotNull(message = "MonthDetail can not be null.")
 	@NotBlank(message = "MonthDetail can not be Blank.")
+	@Pattern(regexp = "JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC", flags = Pattern.Flag.CASE_INSENSITIVE)
 	private String monthDtl;
 
-	@NotNull(message = "YearDetail can not be null.")
+	@NotNull(message = "Year detail can not be null.")
+	@Range(min = 1900, max = 2100, message = "Year deatil should be between 1900 and 2100")
 	private int yearDtl;
 
 	private int twoWhlrTyresCnt;
@@ -62,12 +65,11 @@ public class Tyre implements Serializable {
 			UserEntity userEntity) {
 		super();
 		this.username = username;
-		this.monthDtl = monthDtl;
+		this.monthDtl = monthDtl.toUpperCase();
 		this.yearDtl = yearDtl;
 		this.twoWhlrTyresCnt = twoWhlrTyresCnt;
 		this.fourWhlrTyresCnt = fourWhlrTyresCnt;
 		this.user = userEntity;
-
 	}
 
 	@Id
@@ -89,11 +91,11 @@ public class Tyre implements Serializable {
 	}
 
 	public String getMonthDtl() {
-		return monthDtl;
+		return monthDtl.toUpperCase();
 	}
 
 	public void setMonthDtl(String monthDtl) {
-		this.monthDtl = monthDtl;
+		this.monthDtl = monthDtl.toUpperCase();
 	}
 
 	public int getYearDtl() {

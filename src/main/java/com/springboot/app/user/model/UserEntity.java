@@ -36,12 +36,12 @@ public class UserEntity implements Serializable {
 	@ApiModelProperty(notes = "Unique identifier of the UserEntity. No two users can have the same id.", example = "1", required = true, position = 0)
 	private long id;
 
-	@ApiModelProperty(notes = "Username of the the User.", example = "user", required = true, position = 1)
+	@ApiModelProperty(notes = "Username of the the User.", example = "user1", required = true, position = 1)
 	@NotNull(message = "Username can not be null")
 	@NotBlank(message = "Username can not be blank")
 	private String username;
 
-	@ApiModelProperty(notes = "Password of the User.", example = "user", required = true, position = 2)
+	@ApiModelProperty(notes = "Password of the User.", example = "user1", required = true, position = 2)
 	@NotNull(message = "Password can not be null")
 	@NotBlank(message = "Password can not be blank")
 	private String password;
